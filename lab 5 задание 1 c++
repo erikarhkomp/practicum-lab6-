@@ -1,0 +1,40 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+const double e = 2.71828; // Приблизительное значение числа e
+
+double f(double x1, double x2) {
+    return x1 + 5*x2 + pow(e, pow(x1, 2) + pow(x2, 2));
+}
+
+double coordinateDescent() {
+    double x1 = 0; // Начальное значение x1
+    double x2 = 0; // Начальное значение x2
+    double step_size = 0.1; // Размер шага
+
+    for (int i = 0; i < 1000; i++) { // Проходим несколько итераций
+        double prev_x1 = x1;
+        double prev_x2 = x2;
+
+        // Обновляем x1
+        x1 = prev_x1 - step_size * (1 + 2 * prev_x1 * pow(e, pow(prev_x1, 2) + pow(prev_x2, 2)));
+
+        // Обновляем x2
+        x2 = prev_x2 - step_size * (5 + 2 * prev_x2 * pow(e, pow(prev_x1, 2) + pow(prev_x2, 2)));
+
+        // Проверяем условие сходимости (можно использовать другие критерии)
+        if (abs(f(x1, x2) - f(prev_x1, prev_x2)) < 0.0001) {
+            break; // Выходим из цикла, если достигли необходимой точности
+        }
+    }
+
+    return f(x1, x2);
+}
+
+int main() {
+    cout << "Оптимальное значение функции: " << coordinateDescent() << endl;
+
+    return 0;
+}
