@@ -1,0 +1,47 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+double f(double x1, double x2) {
+    return x1 + 2*x2 + 4*sqrt(1 + pow(x1, 2) + pow(x2, 2));
+}
+
+double df_dx1(double x1, double x2) {
+    return (x1 / sqrt(1 + pow(x1, 2) + pow(x2, 2)));
+}
+
+double df_dx2(double x1, double x2) {
+    return (2 * x2 / sqrt(1 + pow(x1, 2) + pow(x2, 2)));
+}
+
+void gradientDescent() {
+    double x1 = 0; // Начальное значение x1
+    double x2 = 0; // Начальное значение x2
+    double learning_rate = 0.1; // Скорость обучения
+
+    for (int i = 0; i < 1000; i++) { // Проходим несколько итераций
+        double prev_x1 = x1;
+        double prev_x2 = x2;
+
+        // Обновляем x1
+        x1 = prev_x1 - learning_rate * df_dx1(prev_x1, prev_x2);
+
+        // Обновляем x2
+        x2 = prev_x2 - learning_rate * df_dx2(prev_x1, prev_x2);
+
+        // Проверяем условие сходимости (можно использовать другие критерии)
+        if (abs(f(x1, x2) - f(prev_x1, prev_x2)) < 0.0001) {
+            break; // Выходим из цикла, если достигли необходимой точности
+        }
+    }
+
+    cout << "Оптимальное значение функции: " << f(x1, x2) << endl;
+    cout << "x1: " << x1 << ", x2: " << x2 << endl;
+}
+
+int main() {
+    gradientDescent();
+
+    return 0;
+}
