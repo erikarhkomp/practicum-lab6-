@@ -1,47 +1,37 @@
-#include <iostream>
-#include <cmath>
+import numpy as np
 
-using namespace std;
+# Определяем градиент функции
+def gradient_f(x):
+    x1, x2 = x
+    df_dx1 = 1 + x1 / np.sqrt(1 + x1**2 + x2**2)
+    df_dx2 = 2 + 2*x2 / np.sqrt(1 + x1**2 + x2**2)
+    return np.array([df_dx1, df_dx2])
 
-double f(double x1, double x2) {
-    return x1 + 2*x2 + 4*sqrt(1 + pow(x1, 2) + pow(x2, 2));
-}
+# Определяем функцию f(x)
+def f(x):
+    x1, x2 = x
+    return x1 + 2*x2 + 4*np.sqrt(1 + x1**2 + x2**2)
 
-double df_dx1(double x1, double x2) {
-    return (x1 / sqrt(1 + pow(x1, 2) + pow(x2, 2)));
-}
+# Реализуем метод наискорейшего спуска
+def gradient_descent(f, gradient_f, initial_x, learning_rate, tolerance, max_iterations):
+    x = initial_x
+    for _ in range(max_iterations):
+        grad = gradient_f(x)
+        next_x = x - learning_rate * grad
+        if np.linalg.norm(next_x - x) < tolerance:
+            break
+        x = next_x
+    return x
 
-double df_dx2(double x1, double x2) {
-    return (2 * x2 / sqrt(1 + pow(x1, 2) + pow(x2, 2)));
-}
+# Задаем начальное значение, скорость обучения (learning rate), допустимую погрешность и максимальное количество итераций
+initial_x = np.array([0.0, 0.0])
+learning_rate = 0.1
+tolerance = 1e-5
+max_iterations = 1000
 
-void gradientDescent() {
-    double x1 = 0; // Начальное значение x1
-    double x2 = 0; // Начальное значение x2
-    double learning_rate = 0.1; // Скорость обучения
+# Применяем метод наискорейшего спуска для поиска оптимума
+optimal_x = gradient_descent(f, gradient_f, initial_x, learning_rate, tolerance, max_iterations)
+optimal_value = f(optimal_x)
 
-    for (int i = 0; i < 1000; i++) { // Проходим несколько итераций
-        double prev_x1 = x1;
-        double prev_x2 = x2;
-
-        // Обновляем x1
-        x1 = prev_x1 - learning_rate * df_dx1(prev_x1, prev_x2);
-
-        // Обновляем x2
-        x2 = prev_x2 - learning_rate * df_dx2(prev_x1, prev_x2);
-
-        // Проверяем условие сходимости (можно использовать другие критерии)
-        if (abs(f(x1, x2) - f(prev_x1, prev_x2)) < 0.0001) {
-            break; // Выходим из цикла, если достигли необходимой точности
-        }
-    }
-
-    cout << "Оптимальное значение функции: " << f(x1, x2) << endl;
-    cout << "x1: " << x1 << ", x2: " << x2 << endl;
-}
-
-int main() {
-    gradientDescent();
-
-    return 0;
-}
+print("Оптимальное значение x:", optimal_x)
+print("Значение функции в оптимальной точке:", optimal_value)
